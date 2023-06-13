@@ -2,15 +2,17 @@ package hello3.hello.spring.repository;
 
 import hello3.hello.spring.domain.Member;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
+
 
 public class MemoryMemberRepository  implements MemberRepository{
     private static Map<Long, Member> store=new HashMap<>();
     private static long sequence =0L;
     @Override
+    //  member 의 id를 정해주고 store 에 저장하고, member 을 반환
     public Member save(Member member) {
-        //  member 의 id를 정해주고 store 에 저장하고, member 을 반환
         member.setId(++sequence);
         store.put(member.getId(),member);
         return member;
