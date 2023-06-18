@@ -5,11 +5,12 @@ import hello3.hello.spring.repository.MemberRepository;
 import hello3.hello.spring.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Transactional
 public class MemberServices {
     private final MemberRepository memberRepository;
 
