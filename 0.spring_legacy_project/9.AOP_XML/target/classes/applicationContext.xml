@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		<!-- 코드작성 -->
+	<!--  Core Concern Bean 설정 -->
+	<bean id="reader" class="com.ssafy.ws.Reader"/>	
+	<!-- AOP 설정 -->
+	<bean id="bookAdvice"
+		class="com.ssafy.ws.BookAspect" />
+
+	<!-- com.ssafy.ws package안에 있는 클래스에 Cross Cutting Concern적용 -->	
+	<aop:config>
+		<aop:aspect id="traceAspect" ref="bookAdvice">
+			<aop:pointcut id="publicMethod"
+				expression="execution(public * com.ssafy.ws.*.doSomething())" />
+			<aop:before method="before" pointcut-ref="publicMethod" />
+			<aop:after-returning method="afterReturning" pointcut-ref="publicMethod" />
+			<aop:after-throwing method="afterThrowing" pointcut-ref="publicMethod" />
+			<aop:after method="after" pointcut-ref="publicMethod" />
+			<aop:around method="around" pointcut-ref="publicMethod" />
+		</aop:aspect>
+	</aop:config>	
+	
+</beans>
