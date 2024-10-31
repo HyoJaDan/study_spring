@@ -24,8 +24,6 @@
 5. [JPA for ORM](#5-jpa-for-orm)  
 6. [Spring Boot와 JPA 활용 - jpashop](#6-spring-boot와-jpa-활용---jpashop)  
 7. [Spring Security](#7-spring-security)  
-   a. [Spring Security의 핵심 개념](#a-spring-security의-핵심-개념)  
-   b. [JWT와 OAuth](#b-jwt와-oauth)  
 
 ---
 
@@ -173,10 +171,4 @@ Spring Boot와 JPA를 활용한 실전 프로젝트 예제로, 상거래 애플�
 
 ## 7. Spring Security  
 
-### a. Spring Security의 핵심 개념
-
-Spring Security는 인증과 권한 부여를 통해 애플리케이션의 보안성을 강화합니다.
-
-### b. JWT와 OAuth
-
-JWT와 OAuth를 이용하여 인증과 인가를 관리하며, RESTful한 API와 보안을 연동할 수 있습니다.
+ -- 진행중 --
