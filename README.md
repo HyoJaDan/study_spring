@@ -35,7 +35,7 @@
 
 ### a. Java EE와 Servlet
 
-![javaEE 구조](images/javaEE.png)
+![javaEE 구조](images/JavaEE.png)
 Java EE는 Java 기반의 엔터프라이즈 애플리케이션 개발을 위한 표준이었으며, 특히 Servlet은 클라이언트와 서버 간의 동적 데이터 처리를 위한 핵심 기술로 사용되었습니다. `HttpServletRequest`와 `HttpServletResponse`를 사용하여 클라이언트의 요청을 처리하고, 필요한 데이터를 응답으로 제공하는 방식으로 동작했습니다. 이러한 아키텍처는 후에 Spring MVC 패턴의 기초가 되었습니다.
 
 ### b. JDBC
