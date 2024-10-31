@@ -22,7 +22,7 @@
 3. [Spring MVC 2](#3-spring-mvc-2)  
 4. [Spring MVC 3](#4-spring-mvc-3)  
 5. [JPA for ORM](#5-jpa-for-orm)  
-6. [Spring Boot와 JPA 활용 - jpashop](#6-spring-boot와-jpa-활용---jpashop)  
+6. [Spring Boot와 JPA 활용](#6-spring-boot와-jpa-활용)  
 7. [Spring Security](#7-spring-security)  
 
 ---
@@ -138,6 +138,7 @@ Spring MVC로 아이템 관리 시스템을 구현하여 CRUD 기능을 연습�
 
 ## 5. JPA for ORM  
 
+![JPA 구조](images/JPA.png)
 **개요**  
 JPA를 통해 객체와 관계형 데이터베이스를 매핑하는 기본 원리와 기술을 이해합니다. 이 과정에서 엔티티 매핑, 영속성 컨텍스트 관리, JPQL, 연관관계 매핑 등을 학습합니다.
 
@@ -152,7 +153,7 @@ JPA를 통해 객체와 관계형 데이터베이스를 매핑하는 기본 원�
 
 ---
 
-## 6. Spring Boot와 JPA 활용 - jpashop  
+## 6. Spring Boot와 JPA 활용
 
 **개요**  
 Spring Boot와 JPA를 활용한 실전 프로젝트 예제로, 상거래 애플리케이션(jpashop)을 통해 스프링과 JPA의 연동을 학습합니다. API 개발 및 성능 최적화를 위해 다양한 관계 매핑과 JPA의 고급 기능을 활용합니다.
