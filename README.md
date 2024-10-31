@@ -36,11 +36,13 @@
 ### a. Java EE와 Servlet
 
 ![javaEE 구조](images/JavaEE.png)
+
 Java EE는 Java 기반의 엔터프라이즈 애플리케이션 개발을 위한 표준이었으며, 특히 Servlet은 클라이언트와 서버 간의 동적 데이터 처리를 위한 핵심 기술로 사용되었습니다. `HttpServletRequest`와 `HttpServletResponse`를 사용하여 클라이언트의 요청을 처리하고, 필요한 데이터를 응답으로 제공하는 방식으로 동작했습니다. 이러한 아키텍처는 후에 Spring MVC 패턴의 기초가 되었습니다.
 
 ### b. JDBC
 
 ![jdbc 구조](images/jdbc.png)
+
 JDBC (Java Database Connectivity)는 자바와 데이터베이스 간의 연결을 위해 만들어진 API입니다. 다양한 DBMS에서 독립적으로 동작할 수 있도록 설계되었으며, `Connection`, `PreparedStatement`, `ResultSet` 등을 사용하여 SQL 쿼리를 실행하고 결과를 처리할 수 있습니다. 이는 나중에 더 높은 수준의 데이터 접근 기술인 MyBatis나 JPA로 발전하게 됩니다.
 
 ### c. Cookie와 HttpSession
@@ -50,6 +52,7 @@ HTTP 프로토콜은 무상태(stateless)로, 각 요청이 독립적으로 처�
 ### d. Dependency Injection (DI)와 IoC
 
 ![spring legacy 구조](images/spring_legacy.png)
+
 Dependency Injection (DI)와 IoC (Inversion of Control)는 객체 간의 결합도를 낮춰 유연한 구조를 제공하는 설계 원칙입니다. Spring Framework에서 DI를 사용하여 의존성 관리를 컨테이너에게 맡기며, XML, Java, Annotation을 통해 DI를 설정할 수 있습니다. 이는 애플리케이션의 복잡도가 증가하더라도 유연한 구조를 유지할 수 있게 합니다.
 
 ### e. AOP (Aspect Oriented Programming)
