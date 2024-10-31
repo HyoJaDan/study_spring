@@ -1,0 +1,29 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: book-service-jwt
+
+# datsource setting
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ssafydb?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    username: ssafy
+    password: ssafy
+    
+
+# mybatis 관련 설정
+mybatis:
+  mapper-locations: mapper/*.xml
+  type-aliases-package: com.ssafy.ws.model.dto
+
+# jwt setting
+jwt:
+  salt: SSAFY_NonMajor_JavaTrack_SecretKey
+  expire-time: 3600000
+
+logging:
+  level:
+    root: info
+    com.ssafy.ws: debug
+    '[org.springframework]': error
