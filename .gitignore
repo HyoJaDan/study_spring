@@ -1,0 +1,64 @@
+# IntelliJ IDEA files
+**/.idea/
+**/*.iml
+
+# Eclipse files
+**/.classpath
+**/.project
+**/.settings/
+
+# Gradle files
+.gradle/
+build/
+**/build/
+**/out/
+*.jar
+*.war
+*.ear
+
+# Maven files
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Log files
+*.log
+
+# Node.js files (if applicable)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python files (if applicable)
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDE files for other environments (if applicable)
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Other temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Ignore all .idea folders in any subdirectory
+**/.idea/
+
+# Ignore specific IDE configuration files if applicable
+*.user
+*.sln
