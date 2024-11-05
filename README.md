@@ -24,7 +24,7 @@
 5. [JPA for ORM](#5-jpa-for-orm)  
 6. [Spring Boot와 JPA 활용](#6-spring-boot와-jpa-활용)  
 7. [Spring Security](#7-spring-security)  
-
+   a. [JWT](#a-jwt)
 ---
 
 ## 0. Spring Legacy Project  
@@ -172,4 +172,25 @@ Spring Boot와 JPA를 활용한 실전 프로젝트 예제로, 상거래 애플�
 
 ## 7. Spring Security  
 
- -- 진행중 --
+### a. JWT
+ ![javaEE 구조](images/JWT.png)
+Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수행합니다. 인증이 필요한 경로에 접근할 때, JWT를 검증하는 과정을 통해 사용자가 인증된 사용자임을 확인하고 요청을 처리합니다.
+
+
+**JWT 인증 로직**
+- **로그인 요청**: 사용자가 `/login` 경로로 `username`과 `password`를 전송하여 로그인 요청을 보냅니다.
+- **인증 필터 작동**: `SecurityConfig` 설정에 따라 `LoginFilter`가 `UsernamePasswordAuthenticationFilter`를 대체하여 로그인 요청을 가로챕니다.
+- **인증 토큰 생성 및 전달**: `LoginFilter`의 `attemptAuthentication` 메서드에서 사용자 정보를 기반으로 `UsernamePasswordAuthenticationToken`을 생성하고 `AuthenticationManager`에 전달하여 인증을 수행합니다.
+- **사용자 정보 확인**: `AuthenticationManager`는 `CustomUserDetailsService`를 통해 데이터베이스에서 사용자를 조회하여 인증합니다.
+- **JWT 생성 및 응답**: 인증 성공 시 `JWTUtil`을 사용해 JWT를 생성하고 `Authorization` 헤더에 포함하여 클라이언트에 전달합니다.
+- **인증 실패 처리**: 인증 실패 시 `unsuccessfulAuthentication` 메서드가 호출되며, HTTP 상태 코드 `401`을 반환하여 클라이언트에 실패를 알립니다.
+
+**JWT 검증 필터**
+
+**JWTFilter**는 각 요청에서 JWT의 유효성을 검증하여, 인증된 요청인지 확인합니다.
+- **JWTFilter 생성**: `OncePerRequestFilter`를 상속받아 매 요청마다 `doFilterInternal` 메서드를 호출하여 JWT 검증을 수행합니다.
+- **JWT 토큰 추출 및 유효성 검사**: `Authorization` 헤더에서 JWT를 추출하고 `JWTUtil`을 통해 토큰 만료 여부를 확인합니다.
+- **임시 인증 정보 설정**: 유효한 JWT의 경우, `username`과 `role` 정보를 추출하여 `SecurityContextHolder`에 임시로 인증 정보를 등록합니다.
+- **필터 체인 진행**: 검증이 완료되면 `filterChain.doFilter(request, response)`를 호출하여 다음 필터로 요청을 전달합니다.
+- **SecurityConfig에서 JWTFilter 등록**: `SecurityConfig`에서 `JWTFilter`를 `LoginFilter` 앞에 등록하여, 모든 요청에 대해 JWT 검증을 수행하도록 설정합니다.
+- **세션 관리**: 요청 상태가 유지되지 않도록 세션을 `STATELESS`로 설정합니다.
