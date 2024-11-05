@@ -1,6 +1,7 @@
 package com.Hyoja1.springJWT.config;
 
 import com.Hyoja1.springJWT.domain.User;
+import com.Hyoja1.springJWT.jwt.JWTFilter;
 import com.Hyoja1.springJWT.jwt.JWTUtil;
 import com.Hyoja1.springJWT.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ public class SecurityConfig {
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
@@ -64,6 +66,10 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/", "/join").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
+
+        // LoginFilter 앞에 JWTFilter 등록
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         // userNameAuthenticationFilter을 대체하는 필터를 추가하는 것이기 때문에 addFilterAt을 사용한다.
         http
