@@ -25,7 +25,12 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
     public Boolean isExpired(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        try {
+            // jwt 파싱해서 secretKey로 서명검증 및 payload에서 현재시간 기준 만료여부 추출
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true; // 만료된 경우 true 반환
+        }
     }
     public String createJwt(String category,String username, String role, Long expiredMs) {
         return Jwts.builder()
