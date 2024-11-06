@@ -58,6 +58,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/", "/join").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
+                        //accesstoken이 만료된 상태로 접근하면 로그인이 불가능한 상태이기 때문에 모든 사용자가 접근 가능해야 한다.
+                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
 
         http
