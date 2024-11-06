@@ -1,6 +1,8 @@
 package com.example.springjwt.jwt;
 
 import com.example.springjwt.dto.CustomUserDetails;
+import com.example.springjwt.entity.RefreshEntity;
+import com.example.springjwt.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,14 +16,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    private final RefreshRepository refreshRepository;
+
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.refreshRepository = refreshRepository;
     }
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -46,11 +52,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", username, role, 600000L); // 10분
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 24시간
 
+        // 위에서 생성한 Refresh 토큰을 db에도 저장
+        addRefreshEntity(username, refresh,86400000L);
+
         response.setHeader("access", access); // access 토큰 헤더에 응답
         response.addCookie(createCookie("refresh", refresh)); // refresh 토큰 쿠키에 응답
         response.setStatus(HttpStatus.OK.value());
-
     }
+    // refresh 관련 데이터들을 전달받으면 생성하고 repositry에 저장하는 로직
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
+    }
+
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);
