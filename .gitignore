@@ -62,3 +62,19 @@ __pycache__/
 # Ignore specific IDE configuration files if applicable
 *.user
 *.sln
+
+# Ignore .gitignore files in subdirectories
+1.spring_Core_Principle/.gitignore
+2.spring_MVC/.gitignore
+3.spring_MVC2/.gitignore
+4.spring_MVC3__item_service/.gitignore
+5.JPA_for_ORM/JPABasic/.gitignore
+5.JPA_for_ORM/h2/
+5.JPA_for_ORM/jpashop/.gitignore
+6.springboot_and_JPA_utilization/h2/
+6.springboot_and_JPA_utilization/jpashop/.gitignore
+7.spring_security/1.springJWT/.gitignore
+1.springJWT/.gitignore
+
+# Ignore the entire Servers directory
+Servers/
