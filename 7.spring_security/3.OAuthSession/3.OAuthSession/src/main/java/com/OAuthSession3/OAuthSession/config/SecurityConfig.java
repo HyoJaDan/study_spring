@@ -36,6 +36,8 @@ public class SecurityConfig {
 //                .oauth2Login(Customizer.withDefaults());
         http
                 .oauth2Login((oauth2) -> oauth2
+                        // 커스텀 로그인 하고 싶으면 컨트롤러 경로 등록
+                        .loginPage("/login")
                         // userInfoEndPoint : 데이터를 받을수 있는 userDetails를 등록하는 userEndPoint이다.
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)));
