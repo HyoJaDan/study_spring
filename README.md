@@ -208,7 +208,7 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
         - Access 토큰은 응답 헤더에 추가하고, Refresh 토큰은 `createCookie` 메서드로 쿠키에 저장하여 클라이언트에 전달합니다.
     - **결과**: Access 토큰은 **로컬 스토리지**에, Refresh 토큰은 **쿠키**에 저장되어 이후 인증 요청에서 재사용됩니다.
 2. **Access 토큰 필터 (로그인)**
-    
+    ![JWTFilter 구조](images/JWTFilter.png)
     로그인후, 헤더에 담긴 Access 토큰을 확인하는 JWTFilter에서 Access 토큰을 확인합니다.
     
     - **클래스**: `JWTFilter`
@@ -219,7 +219,7 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
         - 유효한 Access 토큰일 경우, 토큰에 포함된 사용자 정보를 추출해 **SecurityContext**에 인증 정보를 설정합니다.
     - **결과**: 모든 요청에서 Access 토큰을 검증하며, 만료된 토큰은 401 응답을 반환합니다.
 3. **Refresh로 Access 재발급 (reissue)**
-    
+    ![reissue](images/reissue.png)
     Access 토큰이 만료되었을때 Refresh 토큰으로 Access 토큰 재발급하는 로직
     
     - **클래스**: `ReissueService`
@@ -258,3 +258,5 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
         - `/logout` 경로의 POST 요청을 통해 Refresh 토큰을 서버에서 삭제하고, 쿠키를 초기화하여 클라이언트에서 사용하지 못하도록 합니다.
         - 쿠키에서 Refresh 토큰을 가져와 서버에 저장된 토큰과 비교 후 삭제합니다.
     - **결과**: 로그아웃 시 Refresh 토큰이 무효화되며, 이후 요청에서 토큰 재발급이 불가능해집니다.
+   ![OAuthJWT](images/OAuthJWT.png)
+OAuthJWT
