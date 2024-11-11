@@ -25,6 +25,7 @@
 6. [Spring Boot와 JPA 활용](#6-spring-boot와-jpa-활용)  
 7. [Spring Security](#7-spring-security)  
    a. [JWT](#a-jwt)
+   b. [JWT 다중 토큰 방식 (Access, Refresh)](#b-jwt-다중-토큰-방식-access-refresh)
 ---
 
 ## 0. Spring Legacy Project  
@@ -194,3 +195,66 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
 - **필터 체인 진행**: 검증이 완료되면 `filterChain.doFilter(request, response)`를 호출하여 다음 필터로 요청을 전달합니다.
 - **SecurityConfig에서 JWTFilter 등록**: `SecurityConfig`에서 `JWTFilter`를 `LoginFilter` 앞에 등록하여, 모든 요청에 대해 JWT 검증을 수행하도록 설정합니다.
 - **세션 관리**: 요청 상태가 유지되지 않도록 세션을 `STATELESS`로 설정합니다.
+
+### b. JWT 다중 토큰 방식 (Access, Refresh)
+1. **다중(Refresh/Access) 토큰 발급**
+   
+    로그인할때 사용하는 LoginFilter에서 Access/Refresh 토큰을 분리하여 **보안성을 높이고, 사용자 경험을 개선**합니다. 짧은 유효 기간을 가진 Access 토큰은 자주 사용되는 요청에 사용되고, Refresh 토큰은 더 긴 유효 기간을 가지고 필요할 때만 사용되어 탈취 위험을 줄입니다.
+    - **클래스**: `LoginFilter`
+    - **메서드**: `successfulAuthentication`
+    - **변경 사항**:
+        - 로그인 성공 시 **Access**와 **Refresh** 두 종류의 JWT 토큰을 발급하도록 변경했습니다.
+        - `jwtUtil.createJwt` 메서드를 통해 각각 유효 기간이 다른 두 개의 토큰을 생성합니다.
+        - Access 토큰은 응답 헤더에 추가하고, Refresh 토큰은 `createCookie` 메서드로 쿠키에 저장하여 클라이언트에 전달합니다.
+    - **결과**: Access 토큰은 **로컬 스토리지**에, Refresh 토큰은 **쿠키**에 저장되어 이후 인증 요청에서 재사용됩니다.
+2. **Access 토큰 필터 (로그인)**
+    
+    로그인후, 헤더에 담긴 Access 토큰을 확인하는 JWTFilter에서 Access 토큰을 확인합니다.
+    
+    - **클래스**: `JWTFilter`
+    - **메서드**: `doFilterInternal`
+    - **변경 사항**:
+        - `request.getHeader("access")`로 요청 헤더에서 Access 토큰을 가져와 검증합니다.
+        - 토큰이 없거나 만료되었을 경우 상태 코드와 메시지를 응답으로 반환하여 인증 실패를 처리합니다.
+        - 유효한 Access 토큰일 경우, 토큰에 포함된 사용자 정보를 추출해 **SecurityContext**에 인증 정보를 설정합니다.
+    - **결과**: 모든 요청에서 Access 토큰을 검증하며, 만료된 토큰은 401 응답을 반환합니다.
+3. **Refresh로 Access 재발급 (reissue)**
+    
+    Access 토큰이 만료되었을때 Refresh 토큰으로 Access 토큰 재발급하는 로직
+    
+    - **클래스**: `ReissueService`
+    - **메서드**: `reissueAccessToken`
+    - **변경 사항**:
+        - 쿠키에서 Refresh 토큰을 가져와 유효성을 확인한 후 새로운 Access 토큰을 재발급합니다.
+        - Refresh 토큰이 만료되지 않았다면 새로운 Access 토큰을 생성하고, 응답 헤더에 추가합니다.
+    - **결과**: Access 토큰이 만료된 상태에서 요청 시, 클라이언트는 Refresh 토큰으로 새로운 Access 토큰을 요청해 재발급받을 수 있습니다.
+4. **Refresh Rotate (Refresh 토큰 갱신)**
+    
+    Refresh 토큰 탈취를 방지하기 위해, 매번 재발급 시 새로운 Refresh 토큰을 생성합니다. 이는 **Refresh 토큰을 악의적으로 재사용하려는 시도를 차단**합니다.
+    
+    - **클래스**: `ReissueService`
+    - **메서드**: `reissueAccessToken`
+    - **변경 사항**:
+        - Refresh 토큰을 사용해 Access 토큰을 재발급할 때, 기존 Refresh 토큰을 무효화하고 새 Refresh 토큰을 발급합니다.
+        - 새로 발급된 Refresh 토큰은 쿠키에 다시 저장됩니다.
+    - **결과**: Refresh 토큰을 주기적으로 갱신하여, 탈취된 토큰의 오용을 방지하고 보안성을 높입니다.
+5. **Refresh 토큰 서버측 저장**
+    
+    Refresh 토큰의 탈취 및 오용 방지를 위해 서버에 Refresh 토큰을 저장해 **서버가 모든 인증의 주도권을 가질 수 있게** 합니다. 이렇게 하면 만료 시 블랙리스트에 등록하거나, 로그아웃 시 삭제할 수 있습니다.
+    
+    - **클래스**: `LoginFilter`, `ReissueService`
+    - **메서드**: `successfulAuthentication`, `addRefreshEntity`, `deleteByRefresh`
+    - **변경 사항**:
+        - 로그인 시 발급된 Refresh 토큰을 데이터베이스에 저장하고, 토큰 재발급 시 이전 토큰을 삭제하고 새로 저장합니다.
+        - `RefreshRepository`를 통해 Refresh 토큰이 서버측에 저장되고, 기존 토큰은 삭제됩니다.
+    - **결과**: 서버에서 관리되는 Refresh 토큰만 유효하며, 탈취된 토큰이 재사용되지 않도록 합니다.
+6. **로그아웃**
+    
+    클라이언트가 로그아웃 요청 시, 서버에서 Refresh 토큰을 무효화하여 **탈취된 Refresh 토큰이 재사용되는 것을 방지**합니다.
+    
+    - **클래스**: `CustomLogoutFilter`
+    - **메서드**: `doFilter`
+    - **변경 사항**:
+        - `/logout` 경로의 POST 요청을 통해 Refresh 토큰을 서버에서 삭제하고, 쿠키를 초기화하여 클라이언트에서 사용하지 못하도록 합니다.
+        - 쿠키에서 Refresh 토큰을 가져와 서버에 저장된 토큰과 비교 후 삭제합니다.
+    - **결과**: 로그아웃 시 Refresh 토큰이 무효화되며, 이후 요청에서 토큰 재발급이 불가능해집니다.
