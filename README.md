@@ -23,11 +23,10 @@
 4. [Spring MVC 3](#4-spring-mvc-3)  
 5. [JPA for ORM](#5-jpa-for-orm)  
 6. [Spring Boot와 JPA 활용](#6-spring-boot와-jpa-활용)  
-7. [Spring Security](#7-spring-security)
-0. [Spring Legacy Project](#0-spring-legacy-project)  
+7. [Spring Security](#7-spring-security)  
    a. [JWT](#a-jwt)  
    b. [JWT 다중 토큰 방식 (Access, Refresh)](#b-jwt-다중-토큰-방식-access-refresh)  
-   
+   c. [OAuth - Session](#oauth---session)
    
 ---
 
@@ -265,5 +264,20 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
         - `/logout` 경로의 POST 요청을 통해 Refresh 토큰을 서버에서 삭제하고, 쿠키를 초기화하여 클라이언트에서 사용하지 못하도록 합니다.
         - 쿠키에서 Refresh 토큰을 가져와 서버에 저장된 토큰과 비교 후 삭제합니다.
     - **결과**: 로그아웃 시 Refresh 토큰이 무효화되며, 이후 요청에서 토큰 재발급이 불가능해집니다.
-   ![OAuthJWT](images/OAuthJWT.png)
+### OAuth - Session
+
+<img src="images/OAuthFlow.png" width="500">
+
+**JWT 인증 로직**
+1. 클라이언트가 소셜 로그인을 시도한다. → 백엔드로 소셜 로그인 GET 요청이 넘어온다.
+2. 백엔드의 `OAuth2AuthorizationRequestRedirectFilter`에서 로그인 요청을 받아서 소셜 로그인 인증 서버에 요청을 보낸다.
+3. 2번의 요청에 대해서 우리쪽으로 로그인 페이지를 응답한다. 사용자는 여기서 로그인을 진행한다.
+4. 로그인이 성공하면 우리가 등록한 redirect-URI를 통해 access 토큰을 발급하기 위한 코드를 보낸다.
+5. 백엔드는 redirect_URI로 데이터를 받는다 .
+6. redirect_URI 주소는 `OAuth2LoginAuthenticatioinFilter`에서 가로채고 
+7. `OAuth2LoginAuthenticationProvider`에서 code로 인증 서버에 방문해서 Access토큰을 발급받는다.
+8. Access토큰으로 리소스 서버에 접근해서 유저 정보를 획득한다.  
+9. 8번에서 OAuthService를 호출해서 유저 정보를 획득하고 OAuth2User에 담아서 유저 정보를 반환받는다.
+10. 로그인이 성공하면 로그인 성공 핸들러가 동작하게 되고 이때 JWT를 발급 후 유저한테 보낸다.
+![OAuthJWT](images/OAuthJWT.png)
 OAuthJWT
