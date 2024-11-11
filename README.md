@@ -26,7 +26,7 @@
 7. [Spring Security](#7-spring-security)  
    a. [JWT](#a-jwt)  
    b. [JWT 다중 토큰 방식 (Access, Refresh)](#b-jwt-다중-토큰-방식-access-refresh)  
-   c. [OAuth - Session](#oauth---session)
+   c. [OAuth - Session](#c-oauth---session)
    
 ---
 
@@ -264,9 +264,9 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
         - `/logout` 경로의 POST 요청을 통해 Refresh 토큰을 서버에서 삭제하고, 쿠키를 초기화하여 클라이언트에서 사용하지 못하도록 합니다.
         - 쿠키에서 Refresh 토큰을 가져와 서버에 저장된 토큰과 비교 후 삭제합니다.
     - **결과**: 로그아웃 시 Refresh 토큰이 무효화되며, 이후 요청에서 토큰 재발급이 불가능해집니다.
-### OAuth - Session
+### c. OAuth - Session
 
-<img src="images/OAuthFlow.png" width="500">
+<img src="images/OAuthFlow.png">
 
 **JWT 인증 로직**
 1. 클라이언트가 소셜 로그인을 시도한다. → 백엔드로 소셜 로그인 GET 요청이 넘어온다.
@@ -279,5 +279,10 @@ Spring Security와 JWT를 사용하여 로그인 인증 및 권한 부여를 수
 8. Access토큰으로 리소스 서버에 접근해서 유저 정보를 획득한다.  
 9. 8번에서 OAuthService를 호출해서 유저 정보를 획득하고 OAuth2User에 담아서 유저 정보를 반환받는다.
 10. 로그인이 성공하면 로그인 성공 핸들러가 동작하게 되고 이때 JWT를 발급 후 유저한테 보낸다.
+
+**구현**
+1. application.properties 변수 설정 :  변수 설정만 진행하면 OAuth2AuthorizationRequestRedirectFilter → OAuth2LoginAuthenticationFilter → OAuth2LoginAuthenticationProvider 까지의 과정을 추가 설정하지 않아도 자동으로 진행한다.
+2. OAuth2UserService : 소셜 로그인을 완료한후 사용자의 데이터를 받기 위한 부분이다. OAuth2UserService를 통해 구현한다.
+3. OAuth2UserDetails : 이 클래스는 Spring Security에서 인증된 사용자 객체로 사용되며, 인증이 완료된 후 사용자 정보를 SecurityContext에 저장하여 애플리케이션 내에서 인증된 사용자의 정보를 참조할 수 있게 해준다.
 ![OAuthJWT](images/OAuthJWT.png)
 OAuthJWT
