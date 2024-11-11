@@ -1,4 +1,4 @@
-package com.OAuthSession3.OAuthSession.oauth2;
+package com.jun4.OAuth.JWT.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

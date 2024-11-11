@@ -1,2 +1,10 @@
-package com.jun4.OAuth.JWT.dto;public class UserDTO {
+package com.jun4.OAuth.JWT.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+@Getter @Setter
+public class UserDTO {
+    private String role;
+    private String name;
+    private String username;
 }

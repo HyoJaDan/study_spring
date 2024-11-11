@@ -1,4 +1,4 @@
-package com.OAuthSession3.OAuthSession.dto;
+package com.jun4.OAuth.JWT.dto;
 
 import java.util.Map;
 

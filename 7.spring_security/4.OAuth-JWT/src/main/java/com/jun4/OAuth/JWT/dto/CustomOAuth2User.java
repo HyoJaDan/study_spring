@@ -1,4 +1,4 @@
-package com.OAuthSession3.OAuthSession.dto;
+package com.jun4.OAuth.JWT.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,33 +10,27 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
-
-    private final OAuth2Response oAuth2Response;
-    private final String role;
-
+    private final UserDTO userDTO;
     @Override
     public Map<String, Object> getAttributes() {
         return null;
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return role;
+                return userDTO.getRole();
             }
         });
         return collection;
     }
-
     @Override
     public String getName() {
-        return oAuth2Response.getName();
+        return userDTO.getName();
     }
-
     public String getUsername() {
-        return oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        return userDTO.getUsername();
     }
 }

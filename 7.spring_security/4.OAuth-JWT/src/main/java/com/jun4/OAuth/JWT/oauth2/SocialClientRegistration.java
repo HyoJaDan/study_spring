@@ -1,4 +1,4 @@
-package com.OAuthSession3.OAuthSession.oauth2;
+package com.jun4.OAuth.JWT.oauth2;
 
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;

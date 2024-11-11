@@ -1,4 +1,4 @@
-package com.OAuthSession3.OAuthSession.domain;
+package com.jun4.OAuth.JWT.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +10,6 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 public class UserEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
