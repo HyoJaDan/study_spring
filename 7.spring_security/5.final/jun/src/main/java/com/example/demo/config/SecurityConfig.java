@@ -1,11 +1,14 @@
 package com.example.demo.config;
 
-import com.example.demo.jwt.JWTUtil;
-import com.example.demo.jwt.LocalJWTFilter;
-import com.example.demo.jwt.LoginFilter;
-import com.example.demo.jwt.OAuthJWTFilter;
-import com.example.demo.oauth2.CustomSuccessHandler;
-import com.example.demo.service.CustomOAuth2UserService;
+import com.example.demo.filter.CustomLogoutFilter;
+import com.example.demo.filter.JWTFilter;
+import com.example.demo.util.JWTUtil;
+import com.example.demo.filter.LoginFilter;
+import com.example.demo.filter.OAuth2SuccessHandler;
+import com.example.demo.repository.RefreshRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.OAuth2UserDetailsService;
+import com.example.demo.util.UtilFunction;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +19,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -28,10 +33,12 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomSuccessHandler customSuccessHandler;
+    private final OAuth2UserDetailsService OAuth2UserDetailsService;
+    private final OAuth2SuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
-
+    private final UserRepository userRepository;
+    private final RefreshRepository refreshRepository;
+    private final UtilFunction utilFunction;
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -40,6 +47,7 @@ public class SecurityConfig {
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -66,20 +74,20 @@ public class SecurityConfig {
         http
                 .oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))
+                                .userService(OAuth2UserDetailsService))
                         .successHandler(customSuccessHandler)
                 );
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/login", "/", "/join","/reissue").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
         http
-                .addFilterBefore(new OAuthJWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil,userRepository), LoginFilter.class);
         http
-                .addFilterBefore(new LocalJWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,utilFunction), UsernamePasswordAuthenticationFilter.class);
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

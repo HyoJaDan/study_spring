@@ -1,9 +1,10 @@
-package com.example.demo.dto;
+package com.example.demo.Response;
+
+import com.example.demo.domain.AuthProvider;
 
 import java.util.Map;
 
-public class GoogleResponse implements OAuth2Response{
-
+public class GoogleResponse implements OAuth2Response {
     private final Map<String, Object> attribute;
 
     public GoogleResponse(Map<String, Object> attribute) {
@@ -11,20 +12,17 @@ public class GoogleResponse implements OAuth2Response{
     }
 
     @Override
-    public String getProvider() {
-        return "google";
+    public AuthProvider getProvider() {
+        return AuthProvider.GOOGLE;
     }
-
     @Override
     public String getProviderId() {
         return attribute.get("sub").toString();
     }
-
     @Override
     public String getEmail() {
         return attribute.get("email").toString();
     }
-
     @Override
     public String getName() {
         return attribute.get("name").toString();

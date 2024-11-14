@@ -1,18 +1,18 @@
-package com.example.demo.dto;
+package com.example.demo.Response;
+
+import com.example.demo.Response.OAuth2Response;
+import com.example.demo.domain.AuthProvider;
 
 import java.util.Map;
 
-public class NaverResponse implements OAuth2Response{
-
+public class NaverResponse implements OAuth2Response {
     private final Map<String, Object> attribute;
-
     public NaverResponse(Map<String, Object> attribute) {
         this.attribute = (Map<String, Object>) attribute.get("response");
     }
-
     @Override
-    public String getProvider() {
-        return "naver";
+    public AuthProvider getProvider() {
+        return AuthProvider.NAVER;
     }
     @Override
     public String getProviderId() {

@@ -1,10 +1,12 @@
 package com.example.demo.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.example.demo.domain.Role;
+import lombok.*;
+
 @Getter @Setter
+@Builder
 public class UserDTO {
-    private String role;
+    private Role role;
     private String name;
     private String username;
 }
