@@ -39,7 +39,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         UserEntity existData = userRepository.findByUsername(username);
 
         if (existData == null) {
-
             UserEntity userEntity = new UserEntity();
             userEntity.setUsername(username);
             userEntity.setEmail(oAuth2Response.getEmail());
@@ -56,7 +55,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new CustomOAuth2User(userDTO);
         }
         else {
-
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
 

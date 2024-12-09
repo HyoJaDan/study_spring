@@ -83,7 +83,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
         http
-                .addFilterBefore(new JWTFilter(jwtUtil,userRepository), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,utilFunction), UsernamePasswordAuthenticationFilter.class);
         http
