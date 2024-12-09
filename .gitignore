@@ -74,6 +74,9 @@ __pycache__/
 6.springboot_and_JPA_utilization/h2/
 6.springboot_and_JPA_utilization/jpashop/.gitignore
 7.spring_security/1.springJWT/.gitignore
+8.Spring_Data_JPA/.gitignore
+/h2
+/h2/
 1.springJWT/.gitignore
 
 # Ignore the entire Servers directory
